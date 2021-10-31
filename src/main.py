@@ -45,9 +45,9 @@ df.to_csv(f'../results/审阅结果.csv',index=True)
 homework_counts = df.shape[0]
 run_success_percent = float(df[df['运行结果'] == "运行成功"].shape[0] / df[df['运行结果'] == "运行失败"].shape[0] * 100)
 if run_success_percent >= 60:
-    performace = "良好"
+    performance = "良好"
 else:
-    performace = "欠佳"
+    performance = "欠佳"
 labels = df["运行结果"].groupby(df["运行结果"]).count().index.tolist()
 values = df["运行结果"].groupby(df["运行结果"]).count().values.tolist()
 trace = [go.Pie(
@@ -83,7 +83,7 @@ report_generate_time = str(datetime.now())
 context = {
     'homework_counts':homework_counts,
     'run_success_percent':run_success_percent,
-    'performace':performace,
+    'performance':performance,
     'success_percent_images':success_percent_images,
     'duplicate_counts':duplicate_counts,
     'duplicate_files':duplicate_files,
