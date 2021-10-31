@@ -9,7 +9,7 @@
 context = {
     'homework_counts':homework_counts,
     'run_success_percent':run_success_percent,
-    'performace':performace,
+    'performance':performance,
     'success_percent_images':success_percent_images,
     'duplicate_counts':duplicate_counts,
     'duplicate_files':duplicate_files,
