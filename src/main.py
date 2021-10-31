@@ -81,7 +81,7 @@ fig2.write_image('../images/duplicate_percent_images.jpeg')
 duplicate_percent_images = InlineImage(doc,'../images/duplicate_percent_images.jpeg',Cm(15))
 report_generate_time = str(datetime.now())
 context = {
-    'homework_counts':homework_counts,
+    'homework_counts':str(homework_counts) + '%',
     'run_success_percent':run_success_percent,
     'performance':performance,
     'success_percent_images':success_percent_images,
