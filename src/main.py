@@ -50,13 +50,14 @@ df['是否存在抄袭嫌疑'] = df['是否存在抄袭嫌疑'].apply(lambda x: 
 df['文件是否含有编码头'] = isinclude_codingheader
 df['文件是否含有编码头'] = df['文件是否含有编码头'].apply(lambda x: '包含' if x == True else '不包含')
 df.to_csv(f'../results/审阅结果.csv', index=True)
-homework_counts = df.shape[0]
+homework_counts = int(df.shape[0])
 run_success_percent = float(
     df[df['运行结果'] == "运行成功"].shape[0] / df.shape[0] * 100)
 if run_success_percent >= 60:
     performance = "良好"
 else:
     performance = "欠佳"
+run_success_percent = str(run_success_percent) + '%'
 labels = df["运行结果"].groupby(df["运行结果"]).count().index.tolist()
 values = df["运行结果"].groupby(df["运行结果"]).count().values.tolist()
 trace = [go.Pie(
@@ -93,7 +94,7 @@ duplicate_percent_images = InlineImage(
 include_encodeheader_counts = df[df['文件是否含有编码头'] == '包含'].shape[0]
 report_generate_time = str(datetime.now())
 context = {
-    'homework_counts': str(homework_counts) + '%',
+    'homework_counts': homework_counts,
     'run_success_percent': run_success_percent,
     'performance': performance,
     'success_percent_images': success_percent_images,
