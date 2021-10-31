@@ -1,0 +1,1 @@
+pip install -U kaleido pandas plotly docxtpl python-docx -i https://pypi.tuna.tsinghua.edu.cn/simple
