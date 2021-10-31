@@ -22,6 +22,7 @@ run_result = []
 judge_time = []
 files_info = []
 run_output = []
+isinclude_codingheader = []
 print('审阅中...')
 for i in files_list[0]:
     single_files = os.system(f"python ../judge_files/{i}")
@@ -31,6 +32,10 @@ for i in files_list[0]:
     judge_time.append(datetime.now())
     with open(f"../judge_files/{i}", "r", encoding='utf-8') as judge_files:
         info = judge_files.read()
+        if '# -*- coding: utf-8 -*-' not in info:
+            isinclude_codingheader.append(False)
+        else:
+            isinclude_codingheader.append(True)
         files_info.append(info)
 df = pd.DataFrame()
 df['文件名'] = files_list[0]
@@ -42,6 +47,8 @@ df['运行结果'] = df['运行结果'].apply(lambda x: "运行成功" if x == 0
 df['代码内容'] = files_info
 df['是否存在抄袭嫌疑'] = df['代码内容'].duplicated(keep=False).values
 df['是否存在抄袭嫌疑'] = df['是否存在抄袭嫌疑'].apply(lambda x: '存在嫌疑' if x == True else '不存在')
+df['文件是否含有编码头'] = isinclude_codingheader
+df['文件是否含有编码头'] = df['文件是否含有编码头'].apply(lambda x: '包含' if x == True else '不包含')
 df.to_csv(f'../results/审阅结果.csv', index=True)
 homework_counts = df.shape[0]
 run_success_percent = float(
@@ -83,6 +90,7 @@ fig2 = go.Figure(data=trace2, layout=layout2)
 fig2.write_image('../images/duplicate_percent_images.jpeg')
 duplicate_percent_images = InlineImage(
     doc, '../images/duplicate_percent_images.jpeg', Cm(15))
+include_encodeheader_counts = df[df['文件是否含有编码头'] == '包含'].shape[0]
 report_generate_time = str(datetime.now())
 context = {
     'homework_counts': str(homework_counts) + '%',
@@ -93,7 +101,8 @@ context = {
     'duplicate_files': duplicate_files,
     'duplicate_percent': duplicate_percent,
     'duplicate_percent_images': duplicate_percent_images,
-    'report_generate_time': report_generate_time
+    'report_generate_time': report_generate_time,
+    'include_encodeheader_counts': include_encodeheader_counts
 }
 
 doc.render(context=context)
