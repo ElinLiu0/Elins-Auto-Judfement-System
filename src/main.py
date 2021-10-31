@@ -43,7 +43,7 @@ df['是否存在抄袭嫌疑'] = df['代码内容'].duplicated(keep=False).value
 df['是否存在抄袭嫌疑'] = df['是否存在抄袭嫌疑'].apply(lambda x:'存在嫌疑' if x == True else '不存在')
 df.to_csv(f'../results/审阅结果.csv',index=True)
 homework_counts = df.shape[0]
-run_success_percent = float(df[df['运行结果'] == "运行成功"].shape[0] / df[df['运行结果'] == "运行失败"].shape[0] * 100)
+run_success_percent = float(df[df['运行结果'] == "运行成功"].shape[0] / df.shape[0] * 100)
 if run_success_percent >= 60:
     performance = "良好"
 else:
