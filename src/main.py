@@ -26,7 +26,9 @@ isinclude_codingheader = []
 print('审阅中...')
 for i in files_list[0]:
     single_files = os.system(f"python ../judge_files/{i}")
+    print(f'------------------------------------------------')
     output = os.popen(f"python ../judge_files/{i}").readlines()
+    print(f'------------------------------------------------')
     run_output.append(output)
     run_result.append(single_files)
     judge_time.append(datetime.now())
