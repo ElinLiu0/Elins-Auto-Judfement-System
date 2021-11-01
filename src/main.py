@@ -12,11 +12,12 @@ from docx.shared import Cm, Inches, Mm, Emu
 import plotly as py
 import plotly.graph_objs as go
 print("读取文件目录中....")
+# 加载模板
 doc = DocxTemplate('../template/审阅报告模板.docx')
 start_time = datetime.now()
-root = os.walk('../judge_files')
+root = os.walk('../judge_files')  # 读取judge_files目录下的作业文件
 files_list = []
-for root, dir, files in root:
+for root, dir, files in root:  # 重解包root中的返回值：根，路径，文件
     files_list.append(files)
 run_result = []
 judge_time = []
@@ -27,11 +28,14 @@ print('审阅中...')
 for i in files_list[0]:
     single_files = os.system(f"python ../judge_files/{i}")
     print(f'------------------------------------------------')
+    # Popen()函数的特性，无法Catch到os库运行时的Error
+    # 且无法隐藏cmd输出
     output = os.popen(f"python ../judge_files/{i}").readlines()
     print(f'------------------------------------------------')
     run_output.append(output)
     run_result.append(single_files)
     judge_time.append(datetime.now())
+    # 判断并写入内容
     with open(f"../judge_files/{i}", "r", encoding='utf-8') as judge_files:
         info = judge_files.read()
         if '# -*- coding: utf-8 -*-' not in info:
@@ -39,6 +43,7 @@ for i in files_list[0]:
         else:
             isinclude_codingheader.append(True)
         files_info.append(info)
+# 创建数据表
 df = pd.DataFrame()
 df['文件名'] = files_list[0]
 df['运行结果'] = run_result
@@ -51,7 +56,9 @@ df['是否存在抄袭嫌疑'] = df['代码内容'].duplicated(keep=False).value
 df['是否存在抄袭嫌疑'] = df['是否存在抄袭嫌疑'].apply(lambda x: '存在嫌疑' if x == True else '不存在')
 df['文件是否含有编码头'] = isinclude_codingheader
 df['文件是否含有编码头'] = df['文件是否含有编码头'].apply(lambda x: '包含' if x == True else '不包含')
+# 导出
 df.to_csv(f'../results/审阅结果.csv', index=True)
+# 构建填充Word数据和图形
 homework_counts = int(df.shape[0])
 run_success_percent = float(
     df[df['运行结果'] == "运行成功"].shape[0] / df.shape[0] * 100)
@@ -95,6 +102,7 @@ duplicate_percent_images = InlineImage(
     doc, '../images/duplicate_percent_images.jpeg', Cm(15))
 include_encodeheader_counts = df[df['文件是否含有编码头'] == '包含'].shape[0]
 report_generate_time = str(datetime.now())
+# 指定填充项为上述声明变量
 context = {
     'homework_counts': homework_counts,
     'run_success_percent': run_success_percent,
@@ -107,7 +115,7 @@ context = {
     'report_generate_time': report_generate_time,
     'include_encodeheader_counts': include_encodeheader_counts
 }
-
+# 导出报告
 doc.render(context=context)
 doc.save('../results/审阅报告.docx')
 end_time = datetime.now()
